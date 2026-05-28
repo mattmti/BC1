@@ -62,7 +62,11 @@ def addCity(ville):
 
 
 def getUserEntry(data, pseudo):
-    
+    userEntry=next((element for element in data if element.get("pseudo")==pseudo), None)
+    if userEntry==None:
+        userEntry = {"pseudo": pseudo, "villes": []}
+        data.append(userEntry)
+    return userEntry
 
 
 
