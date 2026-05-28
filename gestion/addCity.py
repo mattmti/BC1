@@ -1,51 +1,72 @@
 from dotenv import load_dotenv
 import os
+import sys
 import requests
 import json
 
+sys.path.insert(0, r'..')
+import connexion.login as auth
 
 load_dotenv()
 
+apiKey = os.getenv("API_Key")
+currentUser = auth.currentUser
 
-API_Key= os.getenv("API_Key")
+CITIES_FILE = r'..\json\listCities.json'
 
-resultat=[]
 
-ville=input("entrez nom de ville : ")
+def getCityCoords(ville):
+    reponse = requests.get(
+        url="https://maps.googleapis.com/maps/api/geocode/json",
+        params={"address": ville, "key": apiKey}
+    )
+    data = reponse.json()
+    if data["status"] == "ZERO_RESULTS":
+        print(f"This city {ville} doesn't exist")
+        return None
+    return {
+        "nom": ville,
+        "lat": data["results"][0]["geometry"]["location"]["lat"],
+        "long": data["results"][0]["geometry"]["location"]["lng"]
+    }
 
-def getVilles(ville):
-    villePresente=False
-    reponse=requests.get(url="https://maps.googleapis.com/maps/api/geocode/json", params={"address": ville, "key":API_Key})
-    data=reponse.json()
-    if data["status"]=="ZERO_RESULTS":
-        print(f"la ville ", ville ,"n'existe pas")
-    elif data["status"]=="OK":
-        coordonées={
-            ###"pseudo": currentUser,
-            "nom": ville,
-            "lat": data["results"][0]["geometry"]["location"]["lat"],
-            "long": data["results"][0]["geometry"]["location"]["lng"]
-            }
-    with open('..\json\listCities.json', "r", encoding='utf-8') as fichier:
-        resultat = json.load(fichier)
-        
-        
-    '''print(data["status"])
-    print(data)'''  
-    
-    for element in resultat:
-        if element["nom"].lower()== ville.lower():
-            villePresente=True
-            break
-    
-    if villePresente==True:
-        print("La ville est déja presente dans la liste")
+
+def loadCities():
+    with open(CITIES_FILE, "r", encoding='utf-8') as f:
+        return json.load(f)
+
+
+def saveCities(data):
+    with open(CITIES_FILE, "w", encoding='utf-8') as f:
+        json.dump(data, f, indent=4)
+
+            
+
+
+
+def isCityPresent(villes, ville):
+    return any(v["nom"].lower() == ville.lower() for v in villes)
+
+
+def addCity(ville):
+    coords = getCityCoords(ville)
+    data = loadCities()
+    userEntry = getUserEntry(data, currentUser)
+    if isCityPresent(userEntry["villes"], ville):
+        print("This city is already in the list")
     else:
-        resultat.append(coordonées)
-        with open(r'..\json\listCities.json', 'w') as fichier:
-            json.dump(resultat, fichier, indent=4)
-        return(resultat)
+        userEntry["villes"].append(coords)
+        saveCities(data)
+        print(f"{ville} added to your list")
+        return userEntry["villes"]
+
+
+def getUserEntry(data, pseudo):
     
-        
-        
-print(getVilles(ville))
+
+
+
+
+
+ville = input("Enter the name of the city: ")
+addCity(ville)
