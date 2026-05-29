@@ -57,6 +57,8 @@ def getUserEntry(data, pseudo):
 def addCity(ville):
     # Get coordinates from the API
     coords = getCityCoords(ville)
+    if coords is None:
+        return
     data = loadCities()
     userEntry = getUserEntry(data, login.currentUser)
     # Prevent adding a duplicate city
