@@ -9,7 +9,7 @@ from connexion import login
 CITIES_FILE = os.path.join(ROOT, "json", "listCities.json")
 
 
-def supprimerToutesVilles():
+def DeleteEveryCity():
     with open(CITIES_FILE, "r") as f:
         cities = json.load(f)
 
