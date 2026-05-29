@@ -1,0 +1,2 @@
+INSTALLATION : 
+pip install bcrypt

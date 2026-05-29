@@ -44,7 +44,7 @@ def nearestNeighborPath(startCity, listCities):
     totalDistance = 0
 
     
-    while len(citiesList) > len(visited):
+    while len(listCities) > len(visited):
         nextCity, distance = nearestNeighbor(currentCity, listCities, visited)
         visited.append(nextCity[0])
         currentCity = nextCity
@@ -59,7 +59,6 @@ def nearestNeighborPath(startCity, listCities):
     print(f"Distance totale = {totalDistance}")
 
 
-nearestNeighborPath(start, citiesList)
 
 
 

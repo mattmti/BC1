@@ -68,5 +68,3 @@ def createAccount():
     data = {"pseudo" : pseudo, "password" : password}
     users.append(data)
     save()
-
-login()
