@@ -69,5 +69,4 @@ def createAccount():
     users.append(data)
     save()
 
-
 login()

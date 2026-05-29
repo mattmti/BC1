@@ -26,3 +26,4 @@ def deleteCity():
     #update json
     with open("json/listCities.json", "w") as f:
         json.dump(cities, f)
+
