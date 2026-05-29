@@ -1,13 +1,12 @@
 import math 
+import json
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from connexion import login
 
-
-# Testing data
-start = ["Tōkyō-to", 35.6768601, 139.7638947]
-citiesList = [["Tōkyō-to", 35.6768601, 139.7638947],
-              ["Ōsaka-shi", 34.6937569, 135.5014539],
-              ["Kanazawa-shi", 36.561627, 136.6568822],
-              ["Chiba-shi", 35.6070629, 140.1062653],
-              ["Kyōto-shi", 35.0115754, 135.7681441]]
+# Path to the JSON file containing the list of cities
+CITIESFILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json", "listCities.json")
 
 
 def distanceBetween2cities(v1, v2):
@@ -44,7 +43,7 @@ def nearestNeighborPath(startCity, listCities):
     totalDistance = 0
 
     
-    while len(citiesList) > len(visited):
+    while len(listCities) > len(visited):
         nextCity, distance = nearestNeighbor(currentCity, listCities, visited)
         visited.append(nextCity[0])
         currentCity = nextCity
@@ -58,8 +57,35 @@ def nearestNeighborPath(startCity, listCities):
 
     print(f"Distance totale = {totalDistance}")
 
+def loadCities():
+    # Load and return the list of cities from the JSON file
+    with open(CITIESFILE, "r", encoding='utf-8') as f:
+        return json.load(f)
 
-nearestNeighborPath(start, citiesList)
+
+def loadCitiesInFiles(pseudo):
+    data = loadCities()
+    
+    # Find the user matching the given pseudo
+    user = next((u for u in data if u["pseudo"] == pseudo), None)
+    if user is None:
+        print(f"Pseudo '{pseudo}' not found.")
+        return
+
+    # Convert the city data to the format [name, lat, long]
+    cities = [[v["nom"], v["lat"], v["long"]] for v in user["villes"]]
+    
+    # At least 2 cities are required to calculate a route
+    if len(cities) < 2:
+        print("Not enough cities to calculate a route.")
+        return
+
+    # Start the route from the first city in the list
+    startCity = cities[0]
+    nearestNeighborPath(startCity, cities)
 
 
 
+
+if __name__ == "__main__":
+    loadCitiesInFiles(login.currentUser)
