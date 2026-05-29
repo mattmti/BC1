@@ -15,6 +15,7 @@ CITIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 def getCityCoords(ville):
+    # Call Google Geocoding API to get the latitude and longitude of the city
     reponse = requests.get(
         url="https://maps.googleapis.com/maps/api/geocode/json",
         params={"address": ville, "key": apiKey}
@@ -31,20 +32,24 @@ def getCityCoords(ville):
 
 
 def loadCities():
+    # Load the cities list from the JSON file
     with open(CITIES_FILE, "r", encoding='utf-8') as f:
         return json.load(f)
 
 
 def saveCities(data):
+    # Save the updated cities list to the JSON file
     with open(CITIES_FILE, "w", encoding='utf-8') as f:
         json.dump(data, f, indent=4)
 
 
 def isCityPresent(villes, ville):
+    # Check if a city already exists in the list (case-insensitive)
     return any(v["nom"].lower() == ville.lower() for v in villes)
 
 
 def getUserEntry(data, pseudo):
+    # Find the user entry matching the pseudo, or create a new one
     userEntry = next((element for element in data if element.get("pseudo") == pseudo), None)
     if userEntry is None:
         userEntry = {"pseudo": pseudo, "villes": []}
@@ -53,9 +58,11 @@ def getUserEntry(data, pseudo):
 
 
 def addCity(ville):
+    # Get coordinates from the API
     coords = getCityCoords(ville)
     data = loadCities()
     userEntry = getUserEntry(data, login.currentUser)
+    # Prevent adding a duplicate city
     if isCityPresent(userEntry["villes"], ville):
         print("This city is already in the list")
     else:
@@ -63,4 +70,3 @@ def addCity(ville):
         saveCities(data)
         print(f"{ville} added to your list")
         return userEntry["villes"]
-

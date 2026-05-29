@@ -10,9 +10,11 @@ CITIES_FILE = os.path.join(ROOT, "json", "listCities.json")
 
 
 def DeleteEveryCity():
+    # Load the cities list from the JSON file
     with open(CITIES_FILE, "r") as f:
         cities = json.load(f)
 
+    # Find the connected user and clear their city list
     for user in cities:
         if user["pseudo"] == login.currentUser:
             user["villes"] = []
@@ -22,4 +24,3 @@ def DeleteEveryCity():
             return
 
     print(f"Utilisateur '{login.currentUser}' introuvable.")
-
