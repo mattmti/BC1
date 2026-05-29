@@ -49,7 +49,7 @@ class TestDeleteEveryCity:
              patch("builtins.open", mock_open(read_data=json.dumps(data))), \
              patch("json.dump") as mock_dump:
             deleteAll.DeleteEveryCity()
-        assert "introuvable" in capsys.readouterr().out
+        assert "not found" in capsys.readouterr().out
         mock_dump.assert_not_called()
 
     def testDoesNotSaveWhenUserNotFound(self):
@@ -65,4 +65,4 @@ class TestDeleteEveryCity:
              patch("builtins.open", mock_open(read_data=json.dumps([]))), \
              patch("json.dump"):
             deleteAll.DeleteEveryCity()
-        assert "introuvable" in capsys.readouterr().out
+        assert "not found" in capsys.readouterr().out
