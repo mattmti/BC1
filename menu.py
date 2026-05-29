@@ -37,7 +37,7 @@ def connectedMenu():
                     break
                 addCity.addCity(ville)
         elif choice == "3":
-            generateTour.loadCitiesInFiles(login.currentUser)
+            generateTour.loadCitiesInFiles()
         elif choice == "4":
             viewMyTour.viewMyTours()
         elif choice == "5":

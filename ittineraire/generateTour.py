@@ -5,66 +5,46 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from connexion import login
 
-# Path to the JSON file containing the list of cities
 CITIESFILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json", "listCities.json")
-
+TOURSFILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json", "listTours.json")
 
 def distanceBetween2cities(v1, v2):
-    # We convert in radians
     lat1 = math.radians(v1[1])
     long1 = math.radians(v1[2])
     lat2 = math.radians(v2[1])
     long2 = math.radians(v2[2])
-
-    # Formula for calculating the distance between two cities
-    return(6378.197 * math.acos(math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(long2 - long1)))
-
+    return 6378.197 * math.acos(math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(long2 - long1))
 
 def nearestNeighbor(startCity, listCities, visited):
     i = 0
-    minimum = 1000000 # We use 1,000,000 to make sure we wouldn't run into any minimum issues
-    nn = "" # nn is for nearest neighbor
+    minimum = 1000000
+    nn = ""
     while i < len(listCities):
-        # We check to see if the city has already been visited, and if so, we skip it
         if listCities[i][0] in visited:
             i += 1
         else:
-            # We replace the minimum if the distance is lower 
             if distanceBetween2cities(startCity, listCities[i]) < minimum:
                 minimum = distanceBetween2cities(startCity, listCities[i])
                 nn = listCities[i]
             i += 1
-    return(nn, minimum)
-
+    return nn, minimum
 
 def nearestNeighborPath(startCity, listCities):
     visited = [startCity[0]]
     currentCity = startCity
     totalDistance = 0
-
-    
     while len(listCities) > len(visited):
         nextCity, distance = nearestNeighbor(currentCity, listCities, visited)
         visited.append(nextCity[0])
         currentCity = nextCity
         totalDistance += distance
-
-    # We add the startCity because we need to go back to it at the end of the tour
     totalDistance += distanceBetween2cities(currentCity, startCity)
     visited.append(startCity[0])
-    
-    for city in visited:
-        print(city)
-
-    print(f"Distance totale = {totalDistance}")
+    return visited, totalDistance
 
 def loadCities():
-    # Load and return the list of cities from the JSON file
     with open(CITIESFILE, "r", encoding='utf-8') as f:
         return json.load(f)
-
-
-
 
 def groupCities(listCities):
     groupedCities = []
@@ -79,12 +59,7 @@ def groupCities(listCities):
             groupedCities.append(newList)
         elif len(newList) == 1:
             notgroupedcities.append(listCities[i][0])
-
-    return(groupedCities, notgroupedcities)
-
-
-citiesGrouped, citiesNotGrouped = (groupCities(citiesList))
-
+    return groupedCities, notgroupedcities
 
 def findHotelCity(listGroupedCities, listCities):
     listHotelCities = []
@@ -104,19 +79,11 @@ def findHotelCity(listGroupedCities, listCities):
                             ville2 = element
                     if ville1 and ville2:
                         sum += distanceBetween2cities(ville1, ville2)
-        if sum < minimum:
-            minimum = sum
-            hotelCity = listGroupedCities[i][j]
+            if sum < minimum:
+                minimum = sum
+                hotelCity = listGroupedCities[i][j]
         listHotelCities.append(hotelCity)
-    
-    return(listHotelCities)
-
-hotelCitiesList = findHotelCity(citiesGrouped, citiesList) + citiesNotGrouped
-
-#print(citiesGrouped)
-#print(hotelCitiesList)
-
-
+    return listHotelCities
 
 def distanceInGroupedCities(listGroupedCities, listHotelCities, listCities):
     totalDistance = 0
@@ -133,17 +100,12 @@ def distanceInGroupedCities(listGroupedCities, listHotelCities, listCities):
                         ville2 = element
                 if ville1 and ville2:
                     totalDistance += distanceBetween2cities(ville1, ville2) * 2
-
     return totalDistance
-
-#print(distanceInGroupedCities(citiesGrouped, hotelCitiesList, citiesList))
-
 
 def getCoords(city, listCities):
     for element in listCities:
         if element[0] == city:
             return element
-
 
 def findPath(startCity, listHotelCities, listGroupedCities, listCities):
     totalDistance = 0
@@ -172,14 +134,12 @@ def findPath(startCity, listHotelCities, listGroupedCities, listCities):
                     visitedCities.append(memberName)
                     visitedSights.add(memberName)
                     visitedForTravel.append(memberName)
-
                     dist_back = distanceBetween2cities(memberCity, city)
                     totalDistance += dist_back
                     visitedCities.append(city[0])
                     currentCity = city
 
     processGroup(currentCity)
-
     remainingHotels = [city for city in listHotelCities if city not in visitedSights]
 
     while remainingHotels:
@@ -192,60 +152,93 @@ def findPath(startCity, listHotelCities, listGroupedCities, listCities):
                 if dist < minimum:
                     minimum = dist
                     nextHotelCity = hotelCoords
-
         if nextHotelCity is None:
             break
-
         totalDistance += minimum
         currentCity = nextHotelCity
         visitedCities.append(currentCity[0])
         visitedSights.add(currentCity[0])
         visitedForTravel.append(currentCity[0])
         remainingHotels.remove(currentCity[0])
-
         processGroup(currentCity)
 
     dist_home = distanceBetween2cities(currentCity, startCity)
     totalDistance += dist_home
     visitedCities.append(startCity[0])
-
     return visitedCities, totalDistance
 
-path, totalDistance = findPath(start, hotelCitiesList, citiesGrouped, citiesList)
+def saveTour(visited, totalDistance):
+    #ask if user wants to save the tour
+    save = input("Do you want to save this tour? (yes/no) : ")
+    if save != "yes":
+        return
 
-hotelSet = set(hotelCitiesList)
+    #ask visibility
+    visibility = input("Public or private? (public/private) : ")
 
-for element in path:
-    if element in hotelSet:
-        print(f"{element} (Hôtel)")
-    else:
-        print(element)
+    #load existing tours
+    try:
+        with open(TOURSFILE, "r", encoding='utf-8') as f:
+            tours = json.load(f)
+    except FileNotFoundError:
+        tours = []
 
-#print(f"Distance totale = {totalDistance}km")
+    #find user entry or create it
+    userEntry = None
+    for user in tours:
+        if user["pseudo"] == login.currentUser:
+            userEntry = user
+            break
+    if userEntry is None:
+        userEntry = {"pseudo": login.currentUser, "tours": []}
+        tours.append(userEntry)
 
-def loadCitiesInFiles(pseudo):
+    #create and append the new tour
+    newTour = {
+        "id": len(userEntry["tours"]) + 1,
+        "villes": visited,
+        "distance": round(totalDistance, 2),
+        "visibility": visibility
+    }
+    userEntry["tours"].append(newTour)
+
+    with open(TOURSFILE, "w", encoding='utf-8') as f:
+        json.dump(tours, f, indent=4)
+
+    print("Tour saved successfully")
+
+def loadCitiesInFiles():
     data = loadCities()
-    
-    # Find the user matching the given pseudo
-    user = next((u for u in data if u["pseudo"] == pseudo), None)
+    #find connected user
+    user = next((u for u in data if u["pseudo"] == login.currentUser), None)
     if user is None:
-        print(f"Pseudo '{pseudo}' not found.")
+        print("User not found")
         return
-
-    # Convert the city data to the format [name, lat, long]
+    #convert to [name, lat, long] format
     cities = [[v["nom"], v["lat"], v["long"]] for v in user["villes"]]
-    
-    # At least 2 cities are required to calculate a route
     if len(cities) < 2:
-        print("Not enough cities to calculate a route.")
+        print("Not enough cities to calculate a route")
         return
 
-    # Start the route from the first city in the list
     startCity = cities[0]
-    nearestNeighborPath(startCity, cities)
+    #group cities and find hotels
+    citiesGrouped, citiesNotGrouped = groupCities(cities)
+    hotelCitiesList = findHotelCity(citiesGrouped, cities) + citiesNotGrouped
 
+    #generate the tour
+    path, totalDistance = findPath(startCity, hotelCitiesList, citiesGrouped, cities)
 
+    #display the tour
+    hotelSet = set(hotelCitiesList)
+    for element in path:
+        if element in hotelSet:
+            print(f"{element} (Hotel)")
+        else:
+            print(element)
+    print(f"Total distance = {round(totalDistance, 2)} km")
 
+    #save the tour
+    saveTour(path, totalDistance)
 
 if __name__ == "__main__":
-    loadCitiesInFiles(login.currentUser)
+    loadCitiesInFiles()
