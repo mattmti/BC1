@@ -1,5 +1,6 @@
 import json
 import bcrypt
+import os
 
 currentUser = None
 
@@ -12,7 +13,7 @@ def load():
     #load users list from json
     global users
     try:
-        with open("json/users.json", "r") as f:
+        with open(_USERS_FILE, "r") as f:
             users = json.load(f)
     except FileNotFoundError:
         users = []
