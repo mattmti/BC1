@@ -2,71 +2,68 @@ import json
 import bcrypt
 import os
 
-_USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'json', 'users.json')
+currentUser = None
 
 def save():
-    with open(_USERS_FILE, "w") as f:
+    #save users list to json
+    with open("json/users.json","w") as f:
         json.dump(users, f)
 
-
-
 def load():
+    #load users list from json
     global users
     try:
-        with open(_USERS_FILE, "r") as f:
+        with open("json/users.json", "r") as f:
             users = json.load(f)
     except FileNotFoundError:
         users = []
 
 def hashPassword(password):
+    #hash password using bcrypt
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 def checkPassword(password, hashed):
-    return bcrypt.checkpw(password.encode('utf-8'),hashed.encode('utf-8'))
+    #compare plain password with hashed password
+    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 def login():
-    global currentUser #var global pr retenir quel user est connecté
+    global currentUser #global variable to store the connected user
     load()
-    #savoir si elle a deja un compte ou non
-    while True : 
+    while True:
         alreadyAccount = input("Do you already have an account? :")
-        if alreadyAccount == "yes" :
-            while True :
+        if alreadyAccount == "yes":
+            while True:
                 find = False
                 pseudo = input("Enter your pseudo :")
                 password = input("Enter your password :")
-                for element in users :
-                    #verif si les infos correspondent à ce qu'il y a dans la liste
+                for element in users:
+                    # Check if credentials match with JSON data
                     if pseudo == element["pseudo"] and checkPassword(password, element["password"]):
                         currentUser = pseudo
-                        print("Connexion réussi")
+                        print("Connexion enabled")
                         find = True
                         break
                 if not find:
                     print("Invalid pseudo or password")
-                else :
+                else:
                     break
             break
-        
-        elif alreadyAccount == "no": #si pas de compte on redirige pr en créer un
+
+        elif alreadyAccount == "no": #no account redirect to createAccount()
             createAccount()
             break
 
-        else : 
+        else:
             print("The answer must be simply yes or no.")
-
 
 def createAccount():
     global users
     load()
-    #choix du pseudo et password
+    #ask user to choose a pseudo and password
     pseudo = input("Choose a pseudo : ")
     password = input("Choose a password : ")
-    #appeler hashMdp()
+    #hash the password before storing
     password = hashPassword(password)
-
-    data = {"pseudo" : pseudo, "password" : password}
+    data = {"pseudo": pseudo, "password": password}
     users.append(data)
     save()
-
-login()

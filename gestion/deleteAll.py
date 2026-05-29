@@ -23,5 +23,3 @@ def supprimerToutesVilles():
 
     print(f"Utilisateur '{login.currentUser}' introuvable.")
 
-
-supprimerToutesVilles()

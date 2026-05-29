@@ -65,5 +65,3 @@ def addCity(ville):
         return userEntry["villes"]
 
 
-ville = input("Enter the name of the city: ")
-addCity(ville)
