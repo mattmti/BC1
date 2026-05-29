@@ -31,6 +31,10 @@
     },
     {
         "pseudo": "anto",
+        "villes": []
+    },
+    {
+        "pseudo": null,
         "villes": [
             {
                 "nom": "Paris",
@@ -38,34 +42,9 @@
                 "long": 2.3513765
             },
             {
-                "nom": "Versailles",
-                "lat": 48.80225850000001,
-                "long": 2.1297422
-            },
-            {
-                "nom": "Toulouse",
-                "lat": 43.6048462,
-                "long": 1.442848
-            },
-            {
-                "nom": "lille",
-                "lat": 50.624378,
-                "long": 3.0678588
-            },
-            {
-                "nom": "roubaix",
-                "lat": 50.6924529,
-                "long": 3.1782753
-            },
-            {
-                "nom": "tourcoing",
-                "lat": 50.7254967,
-                "long": 3.1638772
-            },
-            {
-                "nom": "marseille",
-                "lat": 43.3025742,
-                "long": 5.369074299999999
+                "nom": "paris texas",
+                "lat": 33.6609389,
+                "long": -95.55551299999999
             }
         ]
     }
