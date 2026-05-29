@@ -32,9 +32,13 @@ def connectedMenu():
             viewList.viewList()
         elif choice == "2":
             while True:
-                ville=input("Add one more City or no: ")
-                if ville.lower()=="no":
+                ville = input("Add one more City or no: ")
+                if ville.lower() == "no":
                     break
+                if not ville.replace(" ", "").isalpha():
+                    print(" Invalid input: please enter letters only.")
+                    continue
+                print(f"City added: {ville}")
                 addCity.addCity(ville)
         elif choice == "3":
             generateTour.loadCitiesInFiles()
