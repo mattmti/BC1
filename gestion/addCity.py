@@ -64,4 +64,3 @@ def addCity(ville):
         print(f"{ville} added to your list")
         return userEntry["villes"]
 
-

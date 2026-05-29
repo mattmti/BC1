@@ -31,8 +31,11 @@ def connectedMenu():
         if choice == "1":
             viewList.viewList()
         elif choice == "2":
-            ville = input("Enter city name : ")
-            addCity.addCity(ville)
+            while True:
+                ville=input("Add a City: ")
+                if ville.lower()=="no":
+                    break
+                addCity.addCity(ville)
         elif choice == "3":
             generateTour.loadCitiesInFiles(login.currentUser)
         elif choice == "4":
