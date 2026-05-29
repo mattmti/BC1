@@ -2,7 +2,7 @@ import math
 
 
 # Testing data
-start = ["Tōkyō-to", 35.6768601, 139.7638947]
+start = ["Chiba-shi", 35.6070629, 140.1062653]
 citiesList = [["Tōkyō-to", 35.6768601, 139.7638947],
               ["Ōsaka-shi", 34.6937569, 135.5014539],
               ["Kanazawa-shi", 36.561627, 136.6568822],
@@ -138,3 +138,87 @@ def distanceInGroupedCities(listGroupedCities, listHotelCities, listCities):
 
 #print(distanceInGroupedCities(citiesGrouped, hotelCitiesList, citiesList))
 
+
+def getCoords(city, listCities):
+    for element in listCities:
+        if element[0] == city:
+            return element
+
+
+def findPath(startCity, listHotelCities, listGroupedCities, listCities):
+    totalDistance = 0
+    currentCity = startCity
+    visitedForTravel = [startCity[0]]
+    visitedCities = [startCity[0]]
+    visitedSights = set([startCity[0]])
+
+    def getGroup(cityName):
+        for group in listGroupedCities:
+            if cityName in group:
+                return group
+        return None
+
+    def processGroup(city):
+        nonlocal totalDistance, currentCity
+        group = getGroup(city[0])
+        if group is None:
+            return
+        for memberName in group:
+            if memberName not in visitedSights and memberName != city[0]:
+                memberCity = getCoords(memberName, listCities)
+                if memberCity:
+                    dist = distanceBetween2cities(currentCity, memberCity)
+                    totalDistance += dist
+                    visitedCities.append(memberName)
+                    visitedSights.add(memberName)
+                    visitedForTravel.append(memberName)
+
+                    dist_back = distanceBetween2cities(memberCity, city)
+                    totalDistance += dist_back
+                    visitedCities.append(city[0])
+                    currentCity = city
+
+    processGroup(currentCity)
+
+    remainingHotels = [city for city in listHotelCities if city not in visitedSights]
+
+    while remainingHotels:
+        minimum = 1000000
+        nextHotelCity = None
+        for hotelName in remainingHotels:
+            hotelCoords = getCoords(hotelName, listCities)
+            if hotelCoords:
+                dist = distanceBetween2cities(currentCity, hotelCoords)
+                if dist < minimum:
+                    minimum = dist
+                    nextHotelCity = hotelCoords
+
+        if nextHotelCity is None:
+            break
+
+        totalDistance += minimum
+        currentCity = nextHotelCity
+        visitedCities.append(currentCity[0])
+        visitedSights.add(currentCity[0])
+        visitedForTravel.append(currentCity[0])
+        remainingHotels.remove(currentCity[0])
+
+        processGroup(currentCity)
+
+    dist_home = distanceBetween2cities(currentCity, startCity)
+    totalDistance += dist_home
+    visitedCities.append(startCity[0])
+
+    return visitedCities, totalDistance
+
+path, totalDistance = findPath(start, hotelCitiesList, citiesGrouped, citiesList)
+
+hotelSet = set(hotelCitiesList)
+
+for element in path:
+    if element in hotelSet:
+        print(f"{element} (Hôtel)")
+    else:
+        print(element)
+
+#print(f"Distance totale = {totalDistance}km")
