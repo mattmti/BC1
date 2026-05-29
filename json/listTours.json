@@ -1,0 +1,25 @@
+[
+    {
+        "pseudo": "anto",
+        "tours": [
+            {
+                "id": 1,
+                "villes": ["Paris", "Lyon", "Marseille", "Toulouse", "Paris"],
+                "distance": 1247.53,
+                "visibility": "public"
+            },
+            {
+                "id": 2,
+                "villes": ["Lille", "Bruxelles", "Amsterdam", "Paris", "Lille"],
+                "distance": 523.78,
+                "visibility": "private"
+            },
+            {
+                "id": 3,
+                "villes": ["Bordeaux", "Biarritz", "San Sebastian", "Bordeaux"],
+                "distance": 312.45,
+                "visibility": "public"
+            }
+        ]
+    }
+]

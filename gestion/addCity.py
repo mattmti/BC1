@@ -4,15 +4,14 @@ import sys
 import requests
 import json
 
-sys.path.insert(0, r'..')
-import connexion.login as auth
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from connexion import login
 
 load_dotenv()
 
 apiKey = os.getenv("API_Key")
-currentUser = auth.currentUser
 
-CITIES_FILE = r'..\json\listCities.json'
+CITIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json", "listCities.json")
 
 
 def getCityCoords(ville):
@@ -40,18 +39,23 @@ def saveCities(data):
     with open(CITIES_FILE, "w", encoding='utf-8') as f:
         json.dump(data, f, indent=4)
 
-            
-
-
 
 def isCityPresent(villes, ville):
     return any(v["nom"].lower() == ville.lower() for v in villes)
 
 
+def getUserEntry(data, pseudo):
+    userEntry = next((element for element in data if element.get("pseudo") == pseudo), None)
+    if userEntry is None:
+        userEntry = {"pseudo": pseudo, "villes": []}
+        data.append(userEntry)
+    return userEntry
+
+
 def addCity(ville):
     coords = getCityCoords(ville)
     data = loadCities()
-    userEntry = getUserEntry(data, currentUser)
+    userEntry = getUserEntry(data, login.currentUser)
     if isCityPresent(userEntry["villes"], ville):
         print("This city is already in the list")
     else:
@@ -60,17 +64,3 @@ def addCity(ville):
         print(f"{ville} added to your list")
         return userEntry["villes"]
 
-
-def getUserEntry(data, pseudo):
-    userEntry=next((element for element in data if element.get("pseudo")==pseudo), None)
-    if userEntry==None:
-        userEntry = {"pseudo": pseudo, "villes": []}
-        data.append(userEntry)
-    return userEntry
-
-
-
-
-
-ville = input("Enter the name of the city: ")
-addCity(ville)
