@@ -1,1 +1,52 @@
-[{"pseudo": "noe", "villes": []}, {"pseudo": "anto", "villes": [{"nom": "Paris", "lat": 48.8575475, "long": 2.3513765}, {"nom": "Versailles", "lat": 48.80225850000001, "long": 2.1297422}, {"nom": "Toulouse", "lat": 43.6048462, "long": 1.442848}]}]
+[
+    {
+        "pseudo": "noe",
+        "villes": [
+            {
+                "nom": "paris",
+                "lat": 48.8575475,
+                "long": 2.3513765
+            },
+            {
+                "nom": "lille",
+                "lat": 50.624378,
+                "long": 3.0678588
+            },
+            {
+                "nom": "barcelone",
+                "lat": 41.3874374,
+                "long": 2.1686496
+            },
+            {
+                "nom": "madrid",
+                "lat": 40.41672790000001,
+                "long": -3.7032905
+            },
+            {
+                "nom": "berlin",
+                "lat": 52.52000659999999,
+                "long": 13.404954
+            }
+        ]
+    },
+    {
+        "pseudo": "anto",
+        "villes": [
+            {
+                "nom": "Paris",
+                "lat": 48.8575475,
+                "long": 2.3513765
+            },
+            {
+                "nom": "Versailles",
+                "lat": 48.80225850000001,
+                "long": 2.1297422
+            },
+            {
+                "nom": "Toulouse",
+                "lat": 43.6048462,
+                "long": 1.442848
+            }
+        ]
+    }
+]
