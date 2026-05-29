@@ -38,7 +38,7 @@ def connectedMenu():
                 if not ville.replace(" ", "").isalpha():
                     print(" Invalid input: please enter letters only.")
                     continue
-                print(f"City added: {ville}")
+                ###print(f"City added: {ville}")
                 addCity.addCity(ville)
         elif choice == "3":
             generateTour.loadCitiesInFiles()
