@@ -1,21 +1,18 @@
 from dotenv import load_dotenv
 import os
-import sys
 import requests
 import json
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from connexion import login
 
 load_dotenv()
 
 apiKey = os.getenv("API_Key")
 
-CITIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json", "listCities.json")
+CITIES_FILE = "json/listCities.json"
 
 
 def getCityCoords(ville):
-    # Call Google Geocoding API to get the latitude and longitude of the city
+    # Call Google Geocoding API to get latitude and longitude of the city
     reponse = requests.get(
         url="https://maps.googleapis.com/maps/api/geocode/json",
         params={"address": ville, "key": apiKey}
