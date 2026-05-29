@@ -169,12 +169,20 @@ def findPath(startCity, listHotelCities, listGroupedCities, listCities):
 
 def saveTour(visited, totalDistance):
     #ask if user wants to save the tour
-    save = input("Do you want to save this tour? (yes/no) : ")
+    while True:
+        save = input("Do you want to save this tour? (yes/no) : ")
+        if save in ("yes", "no"):
+            break
+        print("Please answer with yes or no")
     if save != "yes":
         return
 
     #ask visibility
-    visibility = input("Public or private? (public/private) : ")
+    while True:
+        visibility = input("Public or private? (public/private) : ")
+        if visibility in ("public", "private"):
+            break
+        print("Please answer with public or private")
 
     #load existing tours
     try:
