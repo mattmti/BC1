@@ -1,5 +1,5 @@
 from connexion import login
-from gestion import viewList, addCity, deleteCity, deleteAll
+from gestion import viewList, addCity, deleteCity, deleteAll, changeVisibility
 from ittineraire import generateTour
 import viewMyTour
 import viewTour
@@ -26,7 +26,8 @@ def connectedMenu():
         print("4. View my tours")
         print("5. Delete a city")
         print("6. Delete all cities")
-        print("7. Logout")
+        print("7. Change tour visibility")
+        print("8. Logout")
         choice = input("Choice : ")
         if choice == "1":
             viewList.viewList()
@@ -49,6 +50,8 @@ def connectedMenu():
         elif choice == "6":
             deleteAll.DeleteEveryCity()
         elif choice == "7":
+            changeVisibility.changeVisibility()
+        elif choice == "8":
             login.currentUser = None
             break
         else:
