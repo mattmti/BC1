@@ -32,7 +32,7 @@ def connectedMenu():
             viewList.viewList()
         elif choice == "2":
             while True:
-                ville=input("Add a City: ")
+                ville=input("Add one more City: ")
                 if ville.lower()=="no":
                     break
                 addCity.addCity(ville)
