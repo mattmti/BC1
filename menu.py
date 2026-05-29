@@ -34,13 +34,13 @@ def connectedMenu():
             ville = input("Enter city name : ")
             addCity.addCity(ville)
         elif choice == "3":
-            generateTour.nearestNeighborPath()
+            generateTour.loadCitiesInFiles(login.currentUser)
         elif choice == "4":
             viewMyTour.viewMyTours()
         elif choice == "5":
             deleteCity.deleteCity()
         elif choice == "6":
-            deleteAll.supprimerToutesVilles()
+            deleteAll.DeleteEveryCity()
         elif choice == "7":
             login.currentUser = None
             break
