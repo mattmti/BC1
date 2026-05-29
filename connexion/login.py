@@ -1,9 +1,11 @@
 import json
 import bcrypt
+import os
 
+_USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'json', 'users.json')
 
 def save():
-    with open("json/users.json","w") as f:
+    with open(_USERS_FILE, "w") as f:
         json.dump(users, f)
 
 
@@ -11,7 +13,7 @@ def save():
 def load():
     global users
     try:
-        with open("json/users.json", "r") as f:
+        with open(_USERS_FILE, "r") as f:
             users = json.load(f)
     except FileNotFoundError:
         users = []

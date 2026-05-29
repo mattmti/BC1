@@ -1,0 +1,16 @@
+[
+    {
+        "pseudo": "noe",
+        "villes": []
+    },
+    {
+        "pseudo": "anto",
+        "villes": [
+            {
+                "nom": "madrid",
+                "lat": 40.41672790000001,
+                "long": 3.7032905
+            }
+        ]
+    }
+]
